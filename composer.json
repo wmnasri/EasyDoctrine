@@ -1,0 +1,14 @@
+{
+    "name": "zendframework/EasyDoctrine",
+    "description": "EasyDoctrine",
+    "license": "BSD-3-Clause",
+    "require": {
+        "zendframework/zendframework" : "2.4.*",
+	    "zendframework/zend-developer-tools" : "~1.0.0-RC1",
+	    "doctrine/doctrine-module" : "0.*",
+	    "doctrine/doctrine-orm-module" : "0.*"
+    },
+    "config" : {
+	    "bin-dir" : "bin/"
+	}
+}
