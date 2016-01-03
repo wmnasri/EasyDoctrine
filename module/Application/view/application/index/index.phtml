@@ -13,22 +13,26 @@
                     <tr>
                         <th>Id</th>
                         <th>Full name</th>
-                        <th></th>
+                        <th>Phone Numbers</th>
+                        <th>Action</th>
                     </tr>
                     </thead>
                 <?php foreach($users as $user): ?>
                     <tbody>
                     <tr>
-                        <td><?php echo $user->getId(); ?></td>
-                        <td><?php echo $user->getFullName(); ?></td>
+                        <td><?= $user->getId(); ?></td>
+                        <td><?= $user->getFullName(); ?></td>
+                        <td><?php foreach ($user->getPhonenumbers() as $element) {
+                           echo ' ' . $element->getNumber(); 
+                        }?></td>
                         <td>
                             <a data-toggle="modal" data-target="#Modal-edit" href="#">Edit</a> |
                             <a data-toggle="modal" data-target="#myModal" href="#">Delete</a>
+                            <?= $this->partial('edit.phtml',['user' => $user])?>
+                            <?= $this->partial('delete.phtml',['user' => $user])?>
                         </td>
                     </tr>
                     </tbody>
-                    <?= $this->partial('edit.phtml',['user' => $user])?>
-                    <?= $this->partial('delete.phtml',['user' => $user])?>
                 <?php endforeach; ?>
                 </table>
                 <?php endif; ?>

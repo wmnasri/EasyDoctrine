@@ -4,6 +4,7 @@ namespace Application\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Application\Entity\User;
+use Application\Entity\Phonenumbers;
 
 class IndexController extends AbstractActionController
 {
@@ -16,36 +17,39 @@ class IndexController extends AbstractActionController
         return new ViewModel(array('users' => $users));
     }
 
-    public function addAction()
+    public function saveAction()
     {
-        if ($this->request->isPost()) {
+        $id = (int) $this->params()->fromRoute('id', 0);
+        if ($id) {
+            $user = $this->getObjectManager()->find('\Application\Entity\User', $id);
+        } else {
             $user = new User();
+        }
+        
+        $user->getPhonenumbers()->clear();
+        
+        if ($this->request->isPost()) {
+           $phoneNumbersPost = $this->getRequest()->getPost('phoneNumber');
+            
+           $contacts =  array_map(function ($phoneNum) {
+                   $phoneNumber = new Phonenumbers();
+                   $phoneNumber->setNumber($phoneNum);
+                   return $phoneNumber;
+            }, array_filter($phoneNumbersPost));
+           
+            foreach ($contacts as $contact) {
+                 $user->setPhonenumbers($contact);
+            }
+            
             $user->setFullName($this->getRequest()->getPost('fullname'));
-
+    
             $this->getObjectManager()->persist($user);
             $this->getObjectManager()->flush();
             $newId = $user->getId();
 
             return $this->redirect()->toRoute('home');
         }
-        return new ViewModel();
-    }
-
-    public function editAction()
-    {
-        $id = (int) $this->params()->fromRoute('id', 0);
-        $user = $this->getObjectManager()->find('\Application\Entity\User', $id);
-
-        if ($this->request->isPost()) {
-            $user->setFullName($this->getRequest()->getPost('fullname'));
-
-            $this->getObjectManager()->persist($user);
-            $this->getObjectManager()->flush();
-
-            return $this->redirect()->toRoute('home');
-        }
-
-        return new ViewModel(array('user' => $user));
+        return new ViewModel(['user' => $user]);
     }
 
     public function deleteAction()

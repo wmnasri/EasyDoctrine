@@ -1,3 +1,4 @@
+
 <div id ='Modal-edit' class="modal fade" tabindex="-1" role="dialog">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -5,14 +6,49 @@
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title">Edit User</h4>
       </div>
-      <form method="post" action='<?= $this->url('user', array('action'=>'edit', 'id' => $user->getId()));?>'>
-          <div class="modal-body">       
-              fullname: <input type="text" name="fullname" value="<?php echo $user->getFullname(); ?>">
-          </div>
-          <div class="modal-footer">
-            <input type="submit" class="btn btn-default" value="Validate">
-          </div>
-       </form>
+      <form method="post" id="surveyForm" action ='<?= $this->url('user', array('action'=>'save', 'id' => $user->getId()));?>' class="form-horizontal">
+      <div class="modal-body">  
+        <div class="form-group">
+            <label class="col-xs-3 control-label">Full name</label>
+            <div class="col-xs-5">
+                <input type="text" class="form-control" name="fullname" value = "<?= $user->getFullname(); ?>"/>
+            </div>
+        </div>    
+        <div class="form-group">
+            <label class="col-xs-3 control-label">Phone Number</label>
+            <div class="col-xs-5">
+                <input type="text" class="form-control" name="phoneNumber[]" value="<?= $user->getPhonenumbers()->first()->getNumber(); ?>"/>
+            </div>
+            <div class="col-xs-4">
+                <button type="button" class="btn btn-default addButton">+</button>
+            </div>
+        </div>
+        <?php 
+        $user->getPhonenumbers()->removeElement($user->getPhonenumbers()->first());
+        foreach ($user->getPhonenumbers() as $element) :
+        ?>
+        <div class="form-group" id="optionTemplate">
+            <div class="col-xs-offset-3 col-xs-5">
+                <input class="form-control" type="text" name="phoneNumber[]" value="<?= $element->getNumber() ?>"/>
+            </div>
+            <div class="col-xs-4">
+                <button type="button" class="btn btn-default removeButton">-</button>
+            </div>
+        </div>
+        <?php endforeach;?>
+        <div class="form-group hide" id="optionTemplate">
+            <div class="col-xs-offset-3 col-xs-5">
+                <input class="form-control" type="text" name="phoneNumber[]" />
+            </div>
+            <div class="col-xs-4">
+                <button type="button" class="btn btn-default removeButton">-</button>
+            </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <input type="submit" class="btn btn-default" value="Submit">
+      </div>
+      </form>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->

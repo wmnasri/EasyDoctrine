@@ -199,10 +199,15 @@ class IndexController extends AbstractActionController
         return new ViewModel(array('users' => $users));
     }
 
-    public function addAction()
+    public function saveAction()
     {
+        $id = (int) $this->params()->fromRoute('id', 0);
+        if ($id) {
+        	$user = $this->getObjectManager()->find('\Application\Entity\User', $id);
+        } else {
+        	$user = new User();
+        }
         if ($this->request->isPost()) {
-            $user = new User();
             $user->setFullName($this->getRequest()->getPost('fullname'));
 
             $this->getObjectManager()->persist($user);
@@ -213,24 +218,7 @@ class IndexController extends AbstractActionController
         }
         return new ViewModel();
     }
-
-    public function editAction()
-    {
-        $id = (int) $this->params()->fromRoute('id', 0);
-        $user = $this->getObjectManager()->find('\Application\Entity\User', $id);
-
-        if ($this->request->isPost()) {
-            $user->setFullName($this->getRequest()->getPost('fullname'));
-
-            $this->getObjectManager()->persist($user);
-            $this->getObjectManager()->flush();
-
-            return $this->redirect()->toRoute('home');
-        }
-
-        return new ViewModel(array('user' => $user));
-    }
-
+    
     public function deleteAction()
     {
         $id = (int) $this->params()->fromRoute('id', 0);
@@ -288,11 +276,11 @@ Edit module/Application/view/application/index/index.phtml:
                         <td>
                             <a data-toggle="modal" data-target="#Modal-edit" href="#">Edit</a> |
                             <a data-toggle="modal" data-target="#myModal" href="#">Delete</a>
+                            <?= $this->partial('edit.phtml',['user' => $user])?>
+                    		<?= $this->partial('delete.phtml',['user' => $user])?>
                         </td>
                     </tr>
                     </tbody>
-                    <?= $this->partial('edit.phtml',['user' => $user])?>
-                    <?= $this->partial('delete.phtml',['user' => $user])?>
                 <?php endforeach; ?>
                 </table>
                 <?php endif; ?>
@@ -373,9 +361,165 @@ Add partial view module/Application/view/application/index/delete.phtml:
 
 This covers basic CRUD actions using Doctrine 2 ORM in ZF2.
 
+
+## Association Mapping
+
+This chapter explains mapping associations between objects.
+
+Instead of working with foreign keys in your code, you will always work with references to objects instead and Doctrine will convert those references to foreign keys internally.
+
+A reference to a single object is represented by a foreign key.
+
+A collection of objects is represented by many foreign keys pointing to the object holding the collection
+
+### One-To-Many, Unidirectional with Join Table
+
+A unidirectional one-to-many association can be mapped through a join table. From Doctrine's point of view, it is simply mapped as a unidirectional many-to-many whereby a unique constraint on one of the join columns enforces the one-to-many cardinality.
+
+The following example sets up such a unidirectional one-to-many association:
+
+- Class Entity\User
+
+```php
+<?php
+namespace Application\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+
+/**
+ * @ORM\Entity
+ * @ORM\Table(name="user")
+ */
+class User
+{
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\Column(name="id", type="integer")
+     */
+    protected $id;
+
+    /**
+     *  @ORM\Column(name="full_name", type="string") 
+     */
+    protected $fullName;
+    
+    /**
+     * @ORM\ManyToMany(targetEntity="Application\Entity\Phonenumbers", cascade={"persist", "remove")
+     * @ORM\JoinTable(name="users_phonenumbers",
+     *      joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id", onDelete="CASCADE")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="phonenumber_id", referencedColumnName="id", unique=true, onDelete="CASCADE")}
+     *      )
+     */
+    private $phonenumbers;
+
+    public function __construct()
+    {
+        $this->phonenumbers = new ArrayCollection();
+    }
+	
+	// .. Getter and Setter
+	....
+	
+	/**
+     * @param Phonenumbers $value
+     */
+    public function setPhonenumbers(Phonenumbers $value) 
+    {
+        if (!$this->phonenumbers->contains($value)) {
+            $this->phonenumbers->add($value);
+        }
+    }
+}
+```
+
+- Class Entity\Phonenumbers
+
+```php
+<?php
+namespace Application\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity
+ * @ORM\Table(name="phonenumbers")
+ */
+class Phonenumbers
+{
+	/**
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\Column(name="id", type="integer")
+     */
+    protected $id;
+
+    /**
+     *  @ORM\Column(name="number", type="string") 
+     */
+    protected $number;
+	
+	//.. Getter and Setter
+	...
+}
+```
+
+- Generates the following MySQL Schema:
+
+```sql
+CREATE TABLE User (
+    id INT AUTO_INCREMENT NOT NULL,
+    fullname VARCHAR(45) NOT NULL,
+    PRIMARY KEY(id)
+) ENGINE = InnoDB;
+
+CREATE TABLE users_phonenumbers (
+    user_id INT NOT NULL,
+    phonenumber_id INT NOT NULL,
+    UNIQUE INDEX users_phonenumbers_phonenumber_id_uniq (phonenumber_id),
+    PRIMARY KEY(user_id, phonenumber_id)
+) ENGINE = InnoDB;
+
+CREATE TABLE Phonenumber (
+    id INT AUTO_INCREMENT NOT NULL,
+    number VARCHAR(45) NOT NULL,
+    PRIMARY KEY(id)
+) ENGINE = InnoDB;
+
+ALTER TABLE users_phonenumbers ADD FOREIGN KEY (user_id) REFERENCES User(id);
+ALTER TABLE users_phonenumbers ADD FOREIGN KEY (phonenumber_id) REFERENCES Phonenumber(id);
+```
+
+Now edit saveAction function in IndexConytroller with the following code : 
+
+```php
+ 	$user->getPhonenumbers()->clear();
+        
+	if ($this->request->isPost()) {
+	   $phoneNumbersPost = $this->getRequest()->getPost('phoneNumber');
+	    
+	   $contacts =  array_map(function ($phoneNum) {
+	           $phoneNumber = new Phonenumbers();
+	           $phoneNumber->setNumber($phoneNum);
+	           return $phoneNumber;
+	    }, array_filter($phoneNumbersPost));
+	   
+	    foreach ($contacts as $contact) {
+	         $user->setPhonenumbers($contact);
+	    }
+	    
+	    $user->setFullName($this->getRequest()->getPost('fullname'));
+	
+	    $this->getObjectManager()->persist($user);
+	    $this->getObjectManager()->flush();
+	    $newId = $user->getId();
+```
+
+- You find other Association Mapping in [Doctrine] (http://doctrine-orm.readthedocs.org/projects/doctrine-orm/en/latest/reference/association-mapping.html)
+
 Links
 -----
 * [ZF2](http://framework.zend.com/)
 * [Doctrine 2](http://www.doctrine-project.org/)
 * [IBM blog](http://www.ibm.com/developerworks/library/os-doctrine-php-zend/)
-* [Marco Pivetta Blog](http://marco-pivetta.com/doctrine-orm-zf2-tutorial/)

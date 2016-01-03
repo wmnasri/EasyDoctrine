@@ -47,4 +47,27 @@
         </div> <!-- /container -->
         <?php echo $this->inlineScript() ?>
     </body>
+<script type='text/javascript'>
+$(document).ready(function() {
+    $('#surveyForm')
+        // Add button click handler
+        .on('click', '.addButton', function() {
+            var $template = $('#optionTemplate'),
+                $clone    = $template
+                                .clone()
+                                .removeClass('hide')
+                                .removeAttr('id')
+                                .insertBefore($template),
+                $option   = $clone.find('[name="phoneNumber[][]"]');
+        })
+        // Remove button click handler
+        .on('click', '.removeButton', function() {
+            var $row    = $(this).parents('.form-group'),
+                $option = $row.find('[name="phoneNumber[][]"]');
+
+            // Remove element containing the option
+            $row.remove();
+        })
+});
+</script>
 </html>

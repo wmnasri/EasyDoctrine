@@ -2,9 +2,14 @@
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-
-/** @ORM\Entity */
-class User {
+use Doctrine\Common\Collections\ArrayCollection;
+use Application\Entity\Phonenumbers;
+/**
+ * @ORM\Entity
+ * @ORM\Table(name="user")
+ */
+class User
+{
     /**
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
@@ -16,6 +21,21 @@ class User {
      *  @ORM\Column(name="full_name", type="string") 
      */
     protected $fullName;
+    
+    /**
+     * @ORM\ManyToMany(targetEntity="Application\Entity\Phonenumbers", cascade={"persist", "remove"})
+     * @ORM\JoinTable(name="users_phonenumbers",
+     *      joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id", onDelete="CASCADE")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="phonenumber_id", referencedColumnName="id", unique=true, onDelete="CASCADE")}
+     *      )
+     */
+
+    private $phonenumbers;
+
+    public function __construct()
+    {
+        $this->phonenumbers = new ArrayCollection();
+    }
 
     public function getId()
     {
@@ -30,5 +50,26 @@ class User {
     public function setFullName($value)
     {
         $this->fullName = $value;
+        return $this;
+    }
+    
+    /**
+     * 
+     * @return ArrayCollection
+     */
+    public function getPhonenumbers()
+    {
+        return $this->phonenumbers;
+    }
+    
+    /**
+     * 
+     * @param Phonenumbers $value
+     */
+    public function setPhonenumbers(Phonenumbers $value) 
+    {
+        if (!$this->phonenumbers->contains($value)) {
+            $this->phonenumbers->add($value);
+        }
     }
 }

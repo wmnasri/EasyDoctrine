@@ -6,9 +6,32 @@
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title">Add new User</h4>
       </div>
-      <form method="post" action ='<?= $this->url('user', array('action'=>'add'));?>'>
-      <div class="modal-body">       
-        Full name: <input type="text" name="fullname">
+      <form method="post" id="surveyForm" action ='<?= $this->url('user', array('action'=>'save'));?>' class="form-horizontal">
+      <div class="modal-body">  
+        <div class="form-group">
+            <label class="col-xs-3 control-label">Full name</label>
+            <div class="col-xs-5">
+                <input type="text" class="form-control" name="fullname" />
+            </div>
+        </div>    
+        <div class="form-group">
+            <label class="col-xs-3 control-label">Phone Number</label>
+            <div class="col-xs-5">
+                <input type="text" class="form-control" name="phoneNumber[]" />
+            </div>
+            <div class="col-xs-4">
+                <button type="button" class="btn btn-default addButton">+</button>
+            </div>
+        </div>
+        <div class="form-group hide" id="optionTemplate">
+            <div class="col-xs-offset-3 col-xs-5">
+                <input class="form-control" type="text" name="phoneNumber[]" />
+            </div>
+            <div class="col-xs-4">
+                <button type="button" class="btn btn-default removeButton">-</button>
+            </div>
+        </div>
+
       </div>
       <div class="modal-footer">
         <input type="submit" class="btn btn-default" value="Submit">
