@@ -643,303 +643,320 @@ function setDocumentScrollTop(ypos)
 <h1></h1> 
 <h2> <a id="user-content-creation-steps" class="anchor" href="#creation-steps" aria-hidden="true"><span class="octicon octicon-link"></span></a>Creation Steps</h2> 
 <p>1.Create ZF2 project from skeleton using composer</p> 
-<pre><code>curl -s https://getcomposer.org/installer | php --
-php composer.phar create-project -sdev --repository-url=&quot;http://packages.zendframework.com&quot; zendframework/skeleton-application zf2-example-doctrine2
-</code></pre> 
+<div class="highlight highlight-source-shell">
+ <pre>curl -s https://getcomposer.org/installer <span class="pl-k">|</span> php --
+php composer.phar create-project -sdev --repository-url=<span class="pl-s"><span class="pl-pds">&quot;</span>http://packages.zendframework.com<span class="pl-pds">&quot;</span></span> zendframework/skeleton-application zf2-example-doctrine2</pre>
+</div> 
 <p>2.Update composer.json to require Doctrine 2</p> 
-<pre><code>php composer.phar self-update
+<div class="highlight highlight-source-shell">
+ <pre>php composer.phar self-update
 php composer.phar require doctrine/doctrine-module:dev-master
-php composer.phar require doctrine/doctrine-orm-module:dev-master
-</code></pre> 
+php composer.phar require doctrine/doctrine-orm-module:dev-master</pre>
+</div> 
 <p>3.Install ZF Dev tools</p> 
-<pre><code>php composer.phar require zendframework/zend-developer-tools:dev-master
-</code></pre> 
+<div class="highlight highlight-source-shell">
+ <pre>php composer.phar require zendframework/zend-developer-tools:dev-master</pre>
+</div> 
 <p>4.Copy ZF Dev tools autoload config to application config and add modules</p> 
-<pre><code>cp vendor/zendframework/zend-developer-tools/config/zenddevelopertools.local.php.dist config/autoload/zdt.local.php
-</code></pre> 
+<div class="highlight highlight-source-shell">
+ <pre>cp vendor/zendframework/zend-developer-tools/config/zenddevelopertools.<span class="pl-k">local</span>.php.dist config/autoload/zdt.<span class="pl-k">local</span>.php</pre>
+</div> 
 <p>Edit config/application.config.php:</p> 
-<pre><code>...
-'modules' =&gt; array(
-    'ZendDeveloperTools',
-    'DoctrineModule',
-    'DoctrineORMModule',
-    'Application',
-),
-...
-</code></pre> 
+<div class="highlight highlight-text-html-php">
+ <pre><span class="pl-s1"><span class="pl-k">...</span></span>
+<span class="pl-s1"><span class="pl-s"><span class="pl-pds">'</span>modules<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> <span class="pl-c1">array</span>(</span>
+<span class="pl-s1">    <span class="pl-s"><span class="pl-pds">'</span>ZendDeveloperTools<span class="pl-pds">'</span></span>,</span>
+<span class="pl-s1">    <span class="pl-s"><span class="pl-pds">'</span>DoctrineModule<span class="pl-pds">'</span></span>,</span>
+<span class="pl-s1">    <span class="pl-s"><span class="pl-pds">'</span>DoctrineORMModule<span class="pl-pds">'</span></span>,</span>
+<span class="pl-s1">    <span class="pl-s"><span class="pl-pds">'</span>Application<span class="pl-pds">'</span></span>,</span>
+<span class="pl-s1">),</span>
+<span class="pl-s1"><span class="pl-k">...</span></span></pre>
+</div> 
 <p>5.Add first entity User</p> 
 <p>New file module/Application/src/Application/Entity/User.php:</p> 
-<pre><code>&lt;?php
-
-namespace Application\Entity;
-use Doctrine\ORM\Mapping as ORM;
-/** @ORM\Entity */
-class User {
-    /**
-    * @ORM\Id
-    * @ORM\GeneratedValue(strategy=&quot;AUTO&quot;)
-    * @ORM\Column(type=&quot;integer&quot;)
-    */
-    protected $id;
-
-    /** @ORM\Column(type=&quot;string&quot;) */
-    protected $fullName;
-
-    public function getId()
-    {
-        return $this-&gt;id;
-    }
-
-    public function getFullName()
-    {
-        return $this-&gt;fullName;
-    }
-
-    public function setFullName($value)
-    {
-        $this-&gt;fullName = $value;
-    }
-}
-</code></pre> 
+<div class="highlight highlight-text-html-php">
+ <pre><span class="pl-pse">&lt;?php</span><span class="pl-s1"></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-k">namespace</span> <span class="pl-en">Application\Entity</span>;</span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Doctrine\ORM\Mapping</span> <span class="pl-k">as</span> <span class="pl-c1">ORM</span>;</span>
+<span class="pl-s1"><span class="pl-c">/** @ORM\Entity */</span></span>
+<span class="pl-s1"><span class="pl-k">class</span> <span class="pl-en">User</span> {</span>
+<span class="pl-s1">    <span class="pl-c">/**</span></span>
+<span class="pl-s1"><span class="pl-c"> * @ORM\Id</span></span>
+<span class="pl-s1"><span class="pl-c"> * @ORM\GeneratedValue(strategy=&quot;AUTO&quot;)</span></span>
+<span class="pl-s1"><span class="pl-c"> * @ORM\Column(type=&quot;integer&quot;)</span></span>
+<span class="pl-s1"><span class="pl-c"> */</span></span>
+<span class="pl-s1">    <span class="pl-k">protected</span> <span class="pl-smi">$id</span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-c">/** @ORM\Column(type=&quot;string&quot;) */</span></span>
+<span class="pl-s1">    <span class="pl-k">protected</span> <span class="pl-smi">$fullName</span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-k">public</span> <span class="pl-k">function</span> <span class="pl-en">getId</span>()</span>
+<span class="pl-s1">    {</span>
+<span class="pl-s1">        <span class="pl-k">return</span> <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">id</span>;</span>
+<span class="pl-s1">    }</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-k">public</span> <span class="pl-k">function</span> <span class="pl-en">getFullName</span>()</span>
+<span class="pl-s1">    {</span>
+<span class="pl-s1">        <span class="pl-k">return</span> <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">fullName</span>;</span>
+<span class="pl-s1">    }</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-k">public</span> <span class="pl-k">function</span> <span class="pl-en">setFullName</span>(<span class="pl-smi">$value</span>)</span>
+<span class="pl-s1">    {</span>
+<span class="pl-s1">        <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">fullName</span> <span class="pl-k">=</span> <span class="pl-smi">$value</span>;</span>
+<span class="pl-s1">    }</span>
+<span class="pl-s1">}</span></pre>
+</div> 
 <p>6.Add the Doctrine Driver to application config</p> 
 <p>Edit config/module.config.php:</p> 
-<pre><code>return array(
-    'doctrine' =&gt; array(
-        'driver' =&gt; array(
-            'application_entities' =&gt; array(
-                'class' =&gt;'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
-                'cache' =&gt; 'array',
-                'paths' =&gt; array(__DIR__ . '/../src/Application/Entity')
-            ),
-
-            'orm_default' =&gt; array(
-                'drivers' =&gt; array(
-                    'Application\Entity' =&gt; 'application_entities'
-                )
-            )
-        )
-    ),
-    ...
-</code></pre> 
+<div class="highlight highlight-text-html-php">
+ <pre><span class="pl-s1"><span class="pl-k">return</span> <span class="pl-c1">array</span>(</span>
+<span class="pl-s1">    <span class="pl-s"><span class="pl-pds">'</span>doctrine<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> <span class="pl-c1">array</span>(</span>
+<span class="pl-s1">        <span class="pl-s"><span class="pl-pds">'</span>driver<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> <span class="pl-c1">array</span>(</span>
+<span class="pl-s1">            <span class="pl-s"><span class="pl-pds">'</span>application_entities<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> <span class="pl-c1">array</span>(</span>
+<span class="pl-s1">                <span class="pl-s"><span class="pl-pds">'</span>class<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span><span class="pl-s"><span class="pl-pds">'</span>Doctrine\ORM\Mapping\Driver\AnnotationDriver<span class="pl-pds">'</span></span>,</span>
+<span class="pl-s1">                <span class="pl-s"><span class="pl-pds">'</span>cache<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> <span class="pl-s"><span class="pl-pds">'</span>array<span class="pl-pds">'</span></span>,</span>
+<span class="pl-s1">                <span class="pl-s"><span class="pl-pds">'</span>paths<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> <span class="pl-c1">array</span>(<span class="pl-c1">__DIR__</span> <span class="pl-k">.</span> <span class="pl-s"><span class="pl-pds">'</span>/../src/Application/Entity<span class="pl-pds">'</span></span>)</span>
+<span class="pl-s1">            ),</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">            <span class="pl-s"><span class="pl-pds">'</span>orm_default<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> <span class="pl-c1">array</span>(</span>
+<span class="pl-s1">                <span class="pl-s"><span class="pl-pds">'</span>drivers<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> <span class="pl-c1">array</span>(</span>
+<span class="pl-s1">                    <span class="pl-s"><span class="pl-pds">'</span>Application\Entity<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> <span class="pl-s"><span class="pl-pds">'</span>application_entities<span class="pl-pds">'</span></span></span>
+<span class="pl-s1">                )</span>
+<span class="pl-s1">            )</span>
+<span class="pl-s1">        )</span>
+<span class="pl-s1">    ),</span>
+<span class="pl-s1">    <span class="pl-k">...</span></span></pre>
+</div> 
 <p>You should now see the new entity in the ZF2 Dev tool bar in the doctrine section at the bottom of the screen.</p> 
 <p>7.Add database config for Doctrine</p> 
 <p>New file local.php:</p> 
-<pre><code>&lt;?php
-
-return array(
-);
-</code></pre> 
+<div class="highlight highlight-text-html-php">
+ <pre><span class="pl-pse">&lt;?php</span><span class="pl-s1"></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-k">return</span> <span class="pl-c1">array</span>(</span>
+<span class="pl-s1">);</span></pre>
+</div> 
 <p>New file config/autoload/doctrine.local.php (for local MySql):</p> 
-<pre><code>&lt;?php
-
-return array(
-  'doctrine' =&gt; array(
-    'connection' =&gt; array(
-      'orm_default' =&gt; array(
-        'driverClass' =&gt;'Doctrine\DBAL\Driver\PDOMySql\Driver',
-        'params' =&gt; array(
-          'host'     =&gt; 'localhost',
-          'port'     =&gt; '3306',
-          'user'     =&gt; 'username',
-          'password' =&gt; 'password',
-          'dbname'   =&gt; 'database',
-)))));
-</code></pre> 
+<div class="highlight highlight-text-html-php">
+ <pre><span class="pl-pse">&lt;?php</span><span class="pl-s1"></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-k">return</span> <span class="pl-c1">array</span>(</span>
+<span class="pl-s1">  <span class="pl-s"><span class="pl-pds">'</span>doctrine<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> <span class="pl-c1">array</span>(</span>
+<span class="pl-s1">    <span class="pl-s"><span class="pl-pds">'</span>connection<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> <span class="pl-c1">array</span>(</span>
+<span class="pl-s1">      <span class="pl-s"><span class="pl-pds">'</span>orm_default<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> <span class="pl-c1">array</span>(</span>
+<span class="pl-s1">        <span class="pl-s"><span class="pl-pds">'</span>driverClass<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span><span class="pl-s"><span class="pl-pds">'</span>Doctrine\DBAL\Driver\PDOMySql\Driver<span class="pl-pds">'</span></span>,</span>
+<span class="pl-s1">        <span class="pl-s"><span class="pl-pds">'</span>params<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> <span class="pl-c1">array</span>(</span>
+<span class="pl-s1">          <span class="pl-s"><span class="pl-pds">'</span>host<span class="pl-pds">'</span></span>     <span class="pl-k">=&gt;</span> <span class="pl-s"><span class="pl-pds">'</span>localhost<span class="pl-pds">'</span></span>,</span>
+<span class="pl-s1">          <span class="pl-s"><span class="pl-pds">'</span>port<span class="pl-pds">'</span></span>     <span class="pl-k">=&gt;</span> <span class="pl-s"><span class="pl-pds">'</span>3306<span class="pl-pds">'</span></span>,</span>
+<span class="pl-s1">          <span class="pl-s"><span class="pl-pds">'</span>user<span class="pl-pds">'</span></span>     <span class="pl-k">=&gt;</span> <span class="pl-s"><span class="pl-pds">'</span>username<span class="pl-pds">'</span></span>,</span>
+<span class="pl-s1">          <span class="pl-s"><span class="pl-pds">'</span>password<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> <span class="pl-s"><span class="pl-pds">'</span>password<span class="pl-pds">'</span></span>,</span>
+<span class="pl-s1">          <span class="pl-s"><span class="pl-pds">'</span>dbname<span class="pl-pds">'</span></span>   <span class="pl-k">=&gt;</span> <span class="pl-s"><span class="pl-pds">'</span>database<span class="pl-pds">'</span></span>,</span>
+<span class="pl-s1">)))));</span></pre>
+</div> 
 <p>8.Validate the schema against the current DB (will fail since you haven't got any schema)</p> 
-<pre><code>./vendor/bin/doctrine-module orm:validate-schema
-</code></pre> 
+<div class="highlight highlight-source-shell">
+ <pre>./vendor/bin/doctrine-module orm:validate-schema</pre>
+</div> 
 <p>9.Generate the schema</p> 
 <p>This will apply the ORM generated schema to the DB</p> 
-<pre><code>./vendor/bin/doctrine-module orm:schema-tool:create
-</code></pre> 
+<div class="highlight highlight-source-shell">
+ <pre>./vendor/bin/doctrine-module orm:schema-tool:create</pre>
+</div> 
 <p>10.Update routes for CRUD actions</p> 
 <p>Edit module/Application/config/module.config.php:</p> 
-<pre><code>...
-'user' =&gt; array(
-    'type'    =&gt; 'segment',
-    'options' =&gt; array(
-        'route'    =&gt; '/user[/][:action][/:id]',
-        'constraints' =&gt; array(
-            'action' =&gt; '[a-zA-Z][a-zA-Z0-9_-]*',
-            'id'     =&gt; '[0-9]+',
-        ),
-        'defaults' =&gt; array(
-            'controller' =&gt; 'Application\Controller\Index',
-            'action'     =&gt; 'index',
-        ),
-    ),
-),
-...
-</code></pre> 
+<div class="highlight highlight-text-html-php">
+ <pre><span class="pl-s1"><span class="pl-k">...</span></span>
+<span class="pl-s1"><span class="pl-s"><span class="pl-pds">'</span>user<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> <span class="pl-c1">array</span>(</span>
+<span class="pl-s1">    <span class="pl-s"><span class="pl-pds">'</span>type<span class="pl-pds">'</span></span>    <span class="pl-k">=&gt;</span> <span class="pl-s"><span class="pl-pds">'</span>segment<span class="pl-pds">'</span></span>,</span>
+<span class="pl-s1">    <span class="pl-s"><span class="pl-pds">'</span>options<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> <span class="pl-c1">array</span>(</span>
+<span class="pl-s1">        <span class="pl-s"><span class="pl-pds">'</span>route<span class="pl-pds">'</span></span>    <span class="pl-k">=&gt;</span> <span class="pl-s"><span class="pl-pds">'</span>/user[/][:action][/:id]<span class="pl-pds">'</span></span>,</span>
+<span class="pl-s1">        <span class="pl-s"><span class="pl-pds">'</span>constraints<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> <span class="pl-c1">array</span>(</span>
+<span class="pl-s1">            <span class="pl-s"><span class="pl-pds">'</span>action<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> <span class="pl-s"><span class="pl-pds">'</span>[a-zA-Z][a-zA-Z0-9_-]*<span class="pl-pds">'</span></span>,</span>
+<span class="pl-s1">            <span class="pl-s"><span class="pl-pds">'</span>id<span class="pl-pds">'</span></span>     <span class="pl-k">=&gt;</span> <span class="pl-s"><span class="pl-pds">'</span>[0-9]+<span class="pl-pds">'</span></span>,</span>
+<span class="pl-s1">        ),</span>
+<span class="pl-s1">        <span class="pl-s"><span class="pl-pds">'</span>defaults<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> <span class="pl-c1">array</span>(</span>
+<span class="pl-s1">            <span class="pl-s"><span class="pl-pds">'</span>controller<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> <span class="pl-s"><span class="pl-pds">'</span>Application\Controller\Index<span class="pl-pds">'</span></span>,</span>
+<span class="pl-s1">            <span class="pl-s"><span class="pl-pds">'</span>action<span class="pl-pds">'</span></span>     <span class="pl-k">=&gt;</span> <span class="pl-s"><span class="pl-pds">'</span>index<span class="pl-pds">'</span></span>,</span>
+<span class="pl-s1">        ),</span>
+<span class="pl-s1">    ),</span>
+<span class="pl-s1">),</span>
+<span class="pl-s1"><span class="pl-k">...</span></span></pre>
+</div> 
 <p>11.Update IndexController for CRUD actions</p> 
 <p>Edit module/Application/src/Application/Controller/IndexController.php:</p> 
-<pre><code>&lt;?php
-
-namespace Application\Controller;
-
-use Zend\Mvc\Controller\AbstractActionController;
-use Zend\View\Model\ViewModel;
-use Application\Entity\User;
-
-class IndexController extends AbstractActionController
-{
-    protected $objectManager;
-
-    public function indexAction()
-    {
-        $users = $this-&gt;getObjectManager()-&gt;getRepository('\Application\Entity\User')-&gt;findAll();
-
-        return new ViewModel(array('users' =&gt; $users));
-    }
-
-    public function saveAction()
-    {
-        $id = (int) $this-&gt;params()-&gt;fromRoute('id', 0);
-        if ($id) {
-            $user = $this-&gt;getObjectManager()-&gt;find('\Application\Entity\User', $id);
-        } else {
-            $user = new User();
-        }
-        if ($this-&gt;request-&gt;isPost()) {
-            $user-&gt;setFullName($this-&gt;getRequest()-&gt;getPost('fullname'));
-
-            $this-&gt;getObjectManager()-&gt;persist($user);
-            $this-&gt;getObjectManager()-&gt;flush();
-            $newId = $user-&gt;getId();
-
-            return $this-&gt;redirect()-&gt;toRoute('home');
-        }
-        return new ViewModel();
-    }
-
-    public function deleteAction()
-    {
-        $id = (int) $this-&gt;params()-&gt;fromRoute('id', 0);
-        $user = $this-&gt;getObjectManager()-&gt;find('\Application\Entity\User', $id);
-
-        if ($this-&gt;request-&gt;isPost()) {
-            $this-&gt;getObjectManager()-&gt;remove($user);
-            $this-&gt;getObjectManager()-&gt;flush();
-
-            return $this-&gt;redirect()-&gt;toRoute('home');
-        }
-
-        return new ViewModel(array('user' =&gt; $user));
-    }
-
-    protected function getObjectManager()
-    {
-        if (!$this-&gt;objectManager) {
-            $this-&gt;objectManager = $this-&gt;getServiceLocator()-&gt;get('Doctrine\ORM\EntityManager');
-        }
-
-        return $this-&gt;objectManager;
-    }
-}
-</code></pre> 
+<div class="highlight highlight-text-html-php">
+ <pre><span class="pl-pse">&lt;?php</span><span class="pl-s1"></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-k">namespace</span> <span class="pl-en">Application\Controller</span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Zend\Mvc\Controller\AbstractActionController</span>;</span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Zend\View\Model\ViewModel</span>;</span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Application\Entity\User</span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-k">class</span> <span class="pl-en">IndexController</span> <span class="pl-k">extends</span> <span class="pl-e">AbstractActionController</span></span>
+<span class="pl-s1">{</span>
+<span class="pl-s1">    <span class="pl-k">protected</span> <span class="pl-smi">$objectManager</span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-k">public</span> <span class="pl-k">function</span> <span class="pl-en">indexAction</span>()</span>
+<span class="pl-s1">    {</span>
+<span class="pl-s1">        <span class="pl-smi">$users</span> <span class="pl-k">=</span> <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span>getObjectManager()<span class="pl-k">-&gt;</span>getRepository(<span class="pl-s"><span class="pl-pds">'</span>\Application\Entity\User<span class="pl-pds">'</span></span>)<span class="pl-k">-&gt;</span>findAll();</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-k">return</span> <span class="pl-k">new</span> <span class="pl-c1">ViewModel</span>(<span class="pl-c1">array</span>(<span class="pl-s"><span class="pl-pds">'</span>users<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> <span class="pl-smi">$users</span>));</span>
+<span class="pl-s1">    }</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-k">public</span> <span class="pl-k">function</span> <span class="pl-en">saveAction</span>()</span>
+<span class="pl-s1">    {</span>
+<span class="pl-s1">        <span class="pl-smi">$id</span> <span class="pl-k">=</span> (<span class="pl-k">int</span>) <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span>params()<span class="pl-k">-&gt;</span>fromRoute(<span class="pl-s"><span class="pl-pds">'</span>id<span class="pl-pds">'</span></span>, <span class="pl-c1">0</span>);</span>
+<span class="pl-s1">        <span class="pl-k">if</span> (<span class="pl-smi">$id</span>) {</span>
+<span class="pl-s1">            <span class="pl-smi">$user</span> <span class="pl-k">=</span> <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span>getObjectManager()<span class="pl-k">-&gt;</span>find(<span class="pl-s"><span class="pl-pds">'</span>\Application\Entity\User<span class="pl-pds">'</span></span>, <span class="pl-smi">$id</span>);</span>
+<span class="pl-s1">        } <span class="pl-k">else</span> {</span>
+<span class="pl-s1">            <span class="pl-smi">$user</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">User</span>();</span>
+<span class="pl-s1">        }</span>
+<span class="pl-s1">        <span class="pl-k">if</span> (<span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">request</span><span class="pl-k">-&gt;</span>isPost()) {</span>
+<span class="pl-s1">            <span class="pl-smi">$user</span><span class="pl-k">-&gt;</span>setFullName(<span class="pl-smi">$this</span><span class="pl-k">-&gt;</span>getRequest()<span class="pl-k">-&gt;</span>getPost(<span class="pl-s"><span class="pl-pds">'</span>fullname<span class="pl-pds">'</span></span>));</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">            <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span>getObjectManager()<span class="pl-k">-&gt;</span>persist(<span class="pl-smi">$user</span>);</span>
+<span class="pl-s1">            <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span>getObjectManager()<span class="pl-k">-&gt;</span>flush();</span>
+<span class="pl-s1">            <span class="pl-smi">$newId</span> <span class="pl-k">=</span> <span class="pl-smi">$user</span><span class="pl-k">-&gt;</span>getId();</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">            <span class="pl-k">return</span> <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span>redirect()<span class="pl-k">-&gt;</span>toRoute(<span class="pl-s"><span class="pl-pds">'</span>home<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1">        }</span>
+<span class="pl-s1">        <span class="pl-k">return</span> <span class="pl-k">new</span> <span class="pl-c1">ViewModel</span>();</span>
+<span class="pl-s1">    }</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-k">public</span> <span class="pl-k">function</span> <span class="pl-en">deleteAction</span>()</span>
+<span class="pl-s1">    {</span>
+<span class="pl-s1">        <span class="pl-smi">$id</span> <span class="pl-k">=</span> (<span class="pl-k">int</span>) <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span>params()<span class="pl-k">-&gt;</span>fromRoute(<span class="pl-s"><span class="pl-pds">'</span>id<span class="pl-pds">'</span></span>, <span class="pl-c1">0</span>);</span>
+<span class="pl-s1">        <span class="pl-smi">$user</span> <span class="pl-k">=</span> <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span>getObjectManager()<span class="pl-k">-&gt;</span>find(<span class="pl-s"><span class="pl-pds">'</span>\Application\Entity\User<span class="pl-pds">'</span></span>, <span class="pl-smi">$id</span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-k">if</span> (<span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">request</span><span class="pl-k">-&gt;</span>isPost()) {</span>
+<span class="pl-s1">            <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span>getObjectManager()<span class="pl-k">-&gt;</span>remove(<span class="pl-smi">$user</span>);</span>
+<span class="pl-s1">            <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span>getObjectManager()<span class="pl-k">-&gt;</span>flush();</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">            <span class="pl-k">return</span> <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span>redirect()<span class="pl-k">-&gt;</span>toRoute(<span class="pl-s"><span class="pl-pds">'</span>home<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1">        }</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-k">return</span> <span class="pl-k">new</span> <span class="pl-c1">ViewModel</span>(<span class="pl-c1">array</span>(<span class="pl-s"><span class="pl-pds">'</span>user<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> <span class="pl-smi">$user</span>));</span>
+<span class="pl-s1">    }</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-k">protected</span> <span class="pl-k">function</span> <span class="pl-en">getObjectManager</span>()</span>
+<span class="pl-s1">    {</span>
+<span class="pl-s1">        <span class="pl-k">if</span> (<span class="pl-k">!</span><span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">objectManager</span>) {</span>
+<span class="pl-s1">            <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">objectManager</span> <span class="pl-k">=</span> <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span>getServiceLocator()<span class="pl-k">-&gt;</span>get(<span class="pl-s"><span class="pl-pds">'</span>Doctrine\ORM\EntityManager<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1">        }</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-k">return</span> <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">objectManager</span>;</span>
+<span class="pl-s1">    }</span>
+<span class="pl-s1">}</span></pre>
+</div> 
 <p>12.Add views for CRUD actions</p> 
 <p>Edit module/Application/view/application/index/index.phtml:</p> 
-<pre><code>&lt;div class=&quot;row&quot;&gt;
-    &lt;div class=&quot;col-md-12&quot;&gt;
-        &lt;div class=&quot;panel panel-default&quot;&gt;
-            &lt;div class=&quot;panel-heading&quot;&gt;
-                &lt;h3 class=&quot;panel-title&quot;&gt;Users&lt;/h3&gt;
-            &lt;/div&gt;
-            &lt;div class=&quot;panel-body&quot;&gt;
-                &lt;a data-toggle=&quot;modal&quot; data-target=&quot;#Modal-add&quot; href=&quot;#&quot;&gt;Add User&lt;/a&gt;
+<div class="highlight highlight-text-html-basic">
+ <pre>&lt;<span class="pl-ent">div</span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>row<span class="pl-pds">&quot;</span></span>&gt;
+    &lt;<span class="pl-ent">div</span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>col-md-12<span class="pl-pds">&quot;</span></span>&gt;
+        &lt;<span class="pl-ent">div</span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>panel panel-default<span class="pl-pds">&quot;</span></span>&gt;
+            &lt;<span class="pl-ent">div</span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>panel-heading<span class="pl-pds">&quot;</span></span>&gt;
+                &lt;<span class="pl-ent">h3</span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>panel-title<span class="pl-pds">&quot;</span></span>&gt;Users&lt;/<span class="pl-ent">h3</span>&gt;
+            &lt;/<span class="pl-ent">div</span>&gt;
+            &lt;<span class="pl-ent">div</span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>panel-body<span class="pl-pds">&quot;</span></span>&gt;
+                &lt;<span class="pl-ent">a</span> <span class="pl-e">data-toggle</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>modal<span class="pl-pds">&quot;</span></span> <span class="pl-e">data-target</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>#Modal-add<span class="pl-pds">&quot;</span></span> <span class="pl-e">href</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>#<span class="pl-pds">&quot;</span></span>&gt;Add User&lt;/<span class="pl-ent">a</span>&gt;
 
                 &lt;?php if (isset($users)) : ?&gt;
-                &lt;table class=&quot;table&quot;&gt;
-                    &lt;thead&gt;
-                    &lt;tr&gt;
-                        &lt;th&gt;Id&lt;/th&gt;
-                        &lt;th&gt;Full name&lt;/th&gt;
-                        &lt;th&gt;&lt;/th&gt;
-                    &lt;/tr&gt;
-                    &lt;/thead&gt;
+                &lt;<span class="pl-ent">table</span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>table<span class="pl-pds">&quot;</span></span>&gt;
+                    &lt;<span class="pl-ent">thead</span>&gt;
+                    &lt;<span class="pl-ent">tr</span>&gt;
+                        &lt;<span class="pl-ent">th</span>&gt;Id&lt;/<span class="pl-ent">th</span>&gt;
+                        &lt;<span class="pl-ent">th</span>&gt;Full name&lt;/<span class="pl-ent">th</span>&gt;
+                        &lt;<span class="pl-ent">th</span>&gt;&lt;/<span class="pl-ent">th</span>&gt;
+                    &lt;/<span class="pl-ent">tr</span>&gt;
+                    &lt;/<span class="pl-ent">thead</span>&gt;
                 &lt;?php foreach($users as $user): ?&gt;
-                    &lt;tbody&gt;
-                    &lt;tr&gt;
-                        &lt;td&gt;&lt;?php echo $user-&gt;getId(); ?&gt;&lt;/td&gt;
-                        &lt;td&gt;&lt;?php echo $user-&gt;getFullName(); ?&gt;&lt;/td&gt;
-                        &lt;td&gt;
-                            &lt;a data-toggle=&quot;modal&quot; data-target=&quot;#Modal-edit&quot; href=&quot;#&quot;&gt;Edit&lt;/a&gt; |
-                            &lt;a data-toggle=&quot;modal&quot; data-target=&quot;#myModal&quot; href=&quot;#&quot;&gt;Delete&lt;/a&gt;
+                    &lt;<span class="pl-ent">tbody</span>&gt;
+                    &lt;<span class="pl-ent">tr</span>&gt;
+                        &lt;<span class="pl-ent">td</span>&gt;&lt;?php echo $user-&gt;getId(); ?&gt;&lt;/<span class="pl-ent">td</span>&gt;
+                        &lt;<span class="pl-ent">td</span>&gt;&lt;?php echo $user-&gt;getFullName(); ?&gt;&lt;/<span class="pl-ent">td</span>&gt;
+                        &lt;<span class="pl-ent">td</span>&gt;
+                            &lt;<span class="pl-ent">a</span> <span class="pl-e">data-toggle</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>modal<span class="pl-pds">&quot;</span></span> <span class="pl-e">data-target</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>#Modal-edit<span class="pl-pds">&quot;</span></span> <span class="pl-e">href</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>#<span class="pl-pds">&quot;</span></span>&gt;Edit&lt;/<span class="pl-ent">a</span>&gt; |
+                            &lt;<span class="pl-ent">a</span> <span class="pl-e">data-toggle</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>modal<span class="pl-pds">&quot;</span></span> <span class="pl-e">data-target</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>#myModal<span class="pl-pds">&quot;</span></span> <span class="pl-e">href</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>#<span class="pl-pds">&quot;</span></span>&gt;Delete&lt;/<span class="pl-ent">a</span>&gt;
                             &lt;?= $this-&gt;partial('edit.phtml',['user' =&gt; $user])?&gt;
                             &lt;?= $this-&gt;partial('delete.phtml',['user' =&gt; $user])?&gt;
-                        &lt;/td&gt;
-                    &lt;/tr&gt;
-                    &lt;/tbody&gt;
+                        &lt;/<span class="pl-ent">td</span>&gt;
+                    &lt;/<span class="pl-ent">tr</span>&gt;
+                    &lt;/<span class="pl-ent">tbody</span>&gt;
                 &lt;?php endforeach; ?&gt;
-                &lt;/table&gt;
+                &lt;/<span class="pl-ent">table</span>&gt;
                 &lt;?php endif; ?&gt;
-            &lt;/div&gt;
-        &lt;/div&gt;
-    &lt;/div&gt;
-&lt;/div&gt;
+            &lt;/<span class="pl-ent">div</span>&gt;
+        &lt;/<span class="pl-ent">div</span>&gt;
+    &lt;/<span class="pl-ent">div</span>&gt;
+&lt;/<span class="pl-ent">div</span>&gt;
 &lt;?= $this-&gt;partial('add.phtml')?&gt;
-
-</code></pre> 
+</pre>
+</div> 
 <p>Add partial view module/Application/view/application/index/add.phtml:</p> 
-<pre><code>&lt;div id ='Modal-add' class=&quot;modal fade&quot; tabindex=&quot;-1&quot; role=&quot;dialog&quot;&gt;
-  &lt;div class=&quot;modal-dialog&quot; role=&quot;document&quot;&gt;
-    &lt;div class=&quot;modal-content&quot;&gt;
-      &lt;div class=&quot;modal-header&quot;&gt;
-        &lt;button type=&quot;button&quot; class=&quot;close&quot; data-dismiss=&quot;modal&quot; aria-label=&quot;Close&quot;&gt;&lt;span aria-hidden=&quot;true&quot;&gt;&amp;times;&lt;/span&gt;&lt;/button&gt;
-        &lt;h4 class=&quot;modal-title&quot;&gt;Add new User&lt;/h4&gt;
-      &lt;/div&gt;
-      &lt;form method=&quot;post&quot; action ='&lt;?= $this-&gt;url('user', array('action'=&gt;'add'));?&gt;'&gt;
-      &lt;div class=&quot;modal-body&quot;&gt;       
-        Full name: &lt;input type=&quot;text&quot; name=&quot;fullname&quot;&gt;
-      &lt;/div&gt;
-      &lt;div class=&quot;modal-footer&quot;&gt;
-        &lt;input type=&quot;submit&quot; class=&quot;btn btn-default&quot; value=&quot;Submit&quot;&gt;
-      &lt;/div&gt;
-      &lt;/form&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-&lt;/div&gt;
-</code></pre> 
+<div class="highlight highlight-text-html-basic">
+ <pre>&lt;<span class="pl-ent">div</span> <span class="pl-e">id</span> =<span class="pl-s"><span class="pl-pds">'</span>Modal-add<span class="pl-pds">'</span></span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>modal fade<span class="pl-pds">&quot;</span></span> <span class="pl-e">tabindex</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>-1<span class="pl-pds">&quot;</span></span> <span class="pl-e">role</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>dialog<span class="pl-pds">&quot;</span></span>&gt;
+  &lt;<span class="pl-ent">div</span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>modal-dialog<span class="pl-pds">&quot;</span></span> <span class="pl-e">role</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>document<span class="pl-pds">&quot;</span></span>&gt;
+    &lt;<span class="pl-ent">div</span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>modal-content<span class="pl-pds">&quot;</span></span>&gt;
+      &lt;<span class="pl-ent">div</span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>modal-header<span class="pl-pds">&quot;</span></span>&gt;
+        &lt;<span class="pl-ent">button</span> <span class="pl-e">type</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>button<span class="pl-pds">&quot;</span></span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>close<span class="pl-pds">&quot;</span></span> <span class="pl-e">data-dismiss</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>modal<span class="pl-pds">&quot;</span></span> <span class="pl-e">aria-label</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>Close<span class="pl-pds">&quot;</span></span>&gt;&lt;<span class="pl-ent">span</span> <span class="pl-e">aria-hidden</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>true<span class="pl-pds">&quot;</span></span>&gt;<span class="pl-c1">&amp;times;</span>&lt;/<span class="pl-ent">span</span>&gt;&lt;/<span class="pl-ent">button</span>&gt;
+        &lt;<span class="pl-ent">h4</span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>modal-title<span class="pl-pds">&quot;</span></span>&gt;Add new User&lt;/<span class="pl-ent">h4</span>&gt;
+      &lt;/<span class="pl-ent">div</span>&gt;
+      &lt;<span class="pl-ent">form</span> <span class="pl-e">method</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>post<span class="pl-pds">&quot;</span></span> <span class="pl-e">action</span> =<span class="pl-s"><span class="pl-pds">'</span>&lt;?= $this-&gt;url(<span class="pl-pds">'</span></span><span class="pl-e">user</span><span class="pl-s"><span class="pl-pds">'</span>, array(<span class="pl-pds">'</span></span><span class="pl-e">action</span><span class="pl-s"><span class="pl-pds">'</span>=&gt;<span class="pl-pds">'</span></span><span class="pl-e">add</span><span class="pl-s"><span class="pl-pds">'</span>));?&gt;<span class="pl-pds">'</span></span>&gt;
+      &lt;<span class="pl-ent">div</span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>modal-body<span class="pl-pds">&quot;</span></span>&gt;       
+        Full name: &lt;<span class="pl-ent">input</span> <span class="pl-e">type</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>text<span class="pl-pds">&quot;</span></span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>fullname<span class="pl-pds">&quot;</span></span>&gt;
+      &lt;/<span class="pl-ent">div</span>&gt;
+      &lt;<span class="pl-ent">div</span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>modal-footer<span class="pl-pds">&quot;</span></span>&gt;
+        &lt;<span class="pl-ent">input</span> <span class="pl-e">type</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>submit<span class="pl-pds">&quot;</span></span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>btn btn-default<span class="pl-pds">&quot;</span></span> <span class="pl-e">value</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>Submit<span class="pl-pds">&quot;</span></span>&gt;
+      &lt;/<span class="pl-ent">div</span>&gt;
+      &lt;/<span class="pl-ent">form</span>&gt;
+    &lt;/<span class="pl-ent">div</span>&gt;
+  &lt;/<span class="pl-ent">div</span>&gt;
+&lt;/<span class="pl-ent">div</span>&gt;</pre>
+</div> 
 <p>Add partial view module/Application/view/application/index/edit.phtml:</p> 
-<pre><code>&lt;div id ='Modal-edit' class=&quot;modal fade&quot; tabindex=&quot;-1&quot; role=&quot;dialog&quot;&gt;
-  &lt;div class=&quot;modal-dialog&quot; role=&quot;document&quot;&gt;
-    &lt;div class=&quot;modal-content&quot;&gt;
-      &lt;div class=&quot;modal-header&quot;&gt;
-        &lt;button type=&quot;button&quot; class=&quot;close&quot; data-dismiss=&quot;modal&quot; aria-label=&quot;Close&quot;&gt;&lt;span aria-hidden=&quot;true&quot;&gt;&amp;times;&lt;/span&gt;&lt;/button&gt;
-        &lt;h4 class=&quot;modal-title&quot;&gt;Edit User&lt;/h4&gt;
-      &lt;/div&gt;
-      &lt;form method=&quot;post&quot; action='&lt;?= $this-&gt;url('user', array('action'=&gt;'edit', 'id' =&gt; $user-&gt;getId()));?&gt;'&gt;
-          &lt;div class=&quot;modal-body&quot;&gt;       
-              fullname: &lt;input type=&quot;text&quot; name=&quot;fullname&quot; value=&quot;&lt;?php echo $user-&gt;getFullname(); ?&gt;&quot;&gt;
-          &lt;/div&gt;
-          &lt;div class=&quot;modal-footer&quot;&gt;
-            &lt;input type=&quot;submit&quot; class=&quot;btn btn-default&quot; value=&quot;Validate&quot;&gt;
-          &lt;/div&gt;
-       &lt;/form&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-&lt;/div&gt;
-</code></pre> 
+<div class="highlight highlight-text-html-basic">
+ <pre>&lt;<span class="pl-ent">div</span> <span class="pl-e">id</span> =<span class="pl-s"><span class="pl-pds">'</span>Modal-edit<span class="pl-pds">'</span></span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>modal fade<span class="pl-pds">&quot;</span></span> <span class="pl-e">tabindex</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>-1<span class="pl-pds">&quot;</span></span> <span class="pl-e">role</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>dialog<span class="pl-pds">&quot;</span></span>&gt;
+  &lt;<span class="pl-ent">div</span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>modal-dialog<span class="pl-pds">&quot;</span></span> <span class="pl-e">role</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>document<span class="pl-pds">&quot;</span></span>&gt;
+    &lt;<span class="pl-ent">div</span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>modal-content<span class="pl-pds">&quot;</span></span>&gt;
+      &lt;<span class="pl-ent">div</span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>modal-header<span class="pl-pds">&quot;</span></span>&gt;
+        &lt;<span class="pl-ent">button</span> <span class="pl-e">type</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>button<span class="pl-pds">&quot;</span></span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>close<span class="pl-pds">&quot;</span></span> <span class="pl-e">data-dismiss</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>modal<span class="pl-pds">&quot;</span></span> <span class="pl-e">aria-label</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>Close<span class="pl-pds">&quot;</span></span>&gt;&lt;<span class="pl-ent">span</span> <span class="pl-e">aria-hidden</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>true<span class="pl-pds">&quot;</span></span>&gt;<span class="pl-c1">&amp;times;</span>&lt;/<span class="pl-ent">span</span>&gt;&lt;/<span class="pl-ent">button</span>&gt;
+        &lt;<span class="pl-ent">h4</span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>modal-title<span class="pl-pds">&quot;</span></span>&gt;Edit User&lt;/<span class="pl-ent">h4</span>&gt;
+      &lt;/<span class="pl-ent">div</span>&gt;
+      &lt;<span class="pl-ent">form</span> <span class="pl-e">method</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>post<span class="pl-pds">&quot;</span></span> <span class="pl-e">action</span>=<span class="pl-s"><span class="pl-pds">'</span>&lt;?= $this-&gt;url(<span class="pl-pds">'</span></span><span class="pl-e">user</span><span class="pl-s"><span class="pl-pds">'</span>, array(<span class="pl-pds">'</span></span><span class="pl-e">action</span><span class="pl-s"><span class="pl-pds">'</span>=&gt;<span class="pl-pds">'</span></span><span class="pl-e">edit</span><span class="pl-s"><span class="pl-pds">'</span>, <span class="pl-pds">'</span></span><span class="pl-e">id</span><span class="pl-s"><span class="pl-pds">'</span> =&gt; $user-&gt;getId()));?&gt;<span class="pl-pds">'</span></span>&gt;
+          &lt;<span class="pl-ent">div</span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>modal-body<span class="pl-pds">&quot;</span></span>&gt;       
+              fullname: &lt;<span class="pl-ent">input</span> <span class="pl-e">type</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>text<span class="pl-pds">&quot;</span></span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>fullname<span class="pl-pds">&quot;</span></span> <span class="pl-e">value</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>&lt;?php echo $user-&gt;getFullname(); ?&gt;<span class="pl-pds">&quot;</span></span>&gt;
+          &lt;/<span class="pl-ent">div</span>&gt;
+          &lt;<span class="pl-ent">div</span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>modal-footer<span class="pl-pds">&quot;</span></span>&gt;
+            &lt;<span class="pl-ent">input</span> <span class="pl-e">type</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>submit<span class="pl-pds">&quot;</span></span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>btn btn-default<span class="pl-pds">&quot;</span></span> <span class="pl-e">value</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>Validate<span class="pl-pds">&quot;</span></span>&gt;
+          &lt;/<span class="pl-ent">div</span>&gt;
+       &lt;/<span class="pl-ent">form</span>&gt;
+    &lt;/<span class="pl-ent">div</span>&gt;
+  &lt;/<span class="pl-ent">div</span>&gt;
+&lt;/<span class="pl-ent">div</span>&gt;</pre>
+</div> 
 <p>Add partial view module/Application/view/application/index/delete.phtml:</p> 
-<pre><code>&lt;div id ='myModal' class=&quot;modal fade&quot; tabindex=&quot;-1&quot; role=&quot;dialog&quot;&gt;
-  &lt;div class=&quot;modal-dialog&quot; role=&quot;document&quot;&gt;
-    &lt;div class=&quot;modal-content&quot;&gt;
-      &lt;div class=&quot;modal-header&quot;&gt;
-        &lt;button type=&quot;button&quot; class=&quot;close&quot; data-dismiss=&quot;modal&quot; aria-label=&quot;Close&quot;&gt;&lt;span aria-hidden=&quot;true&quot;&gt;&amp;times;&lt;/span&gt;&lt;/button&gt;
-        &lt;h4 class=&quot;modal-title&quot;&gt;Delete User&lt;/h4&gt;
-      &lt;/div&gt;
-      &lt;div class=&quot;modal-body&quot;&gt;
-        Are you sure you want to delete user &lt;?= $user-&gt;getFullname(); ?&gt;? &lt;br/&gt; 
-      &lt;/div&gt;
-      &lt;div class=&quot;modal-footer&quot;&gt;
-         &lt;form method=&quot;post&quot; action='&lt;?= $this-&gt;url('user', array('action'=&gt;'delete', 'id' =&gt; $user-&gt;getId()));?&gt;'&gt;
-          &lt;input type=&quot;submit&quot; class=&quot;btn btn-default&quot; value=&quot;Delete&quot;&gt;
-         &lt;/form&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-&lt;/div&gt;
-</code></pre> 
+<div class="highlight highlight-text-html-basic">
+ <pre>&lt;<span class="pl-ent">div</span> <span class="pl-e">id</span> =<span class="pl-s"><span class="pl-pds">'</span>myModal<span class="pl-pds">'</span></span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>modal fade<span class="pl-pds">&quot;</span></span> <span class="pl-e">tabindex</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>-1<span class="pl-pds">&quot;</span></span> <span class="pl-e">role</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>dialog<span class="pl-pds">&quot;</span></span>&gt;
+  &lt;<span class="pl-ent">div</span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>modal-dialog<span class="pl-pds">&quot;</span></span> <span class="pl-e">role</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>document<span class="pl-pds">&quot;</span></span>&gt;
+    &lt;<span class="pl-ent">div</span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>modal-content<span class="pl-pds">&quot;</span></span>&gt;
+      &lt;<span class="pl-ent">div</span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>modal-header<span class="pl-pds">&quot;</span></span>&gt;
+        &lt;<span class="pl-ent">button</span> <span class="pl-e">type</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>button<span class="pl-pds">&quot;</span></span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>close<span class="pl-pds">&quot;</span></span> <span class="pl-e">data-dismiss</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>modal<span class="pl-pds">&quot;</span></span> <span class="pl-e">aria-label</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>Close<span class="pl-pds">&quot;</span></span>&gt;&lt;<span class="pl-ent">span</span> <span class="pl-e">aria-hidden</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>true<span class="pl-pds">&quot;</span></span>&gt;<span class="pl-c1">&amp;times;</span>&lt;/<span class="pl-ent">span</span>&gt;&lt;/<span class="pl-ent">button</span>&gt;
+        &lt;<span class="pl-ent">h4</span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>modal-title<span class="pl-pds">&quot;</span></span>&gt;Delete User&lt;/<span class="pl-ent">h4</span>&gt;
+      &lt;/<span class="pl-ent">div</span>&gt;
+      &lt;<span class="pl-ent">div</span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>modal-body<span class="pl-pds">&quot;</span></span>&gt;
+        Are you sure you want to delete user &lt;?= $user-&gt;getFullname(); ?&gt;? &lt;<span class="pl-ent">br</span>/&gt; 
+      &lt;/<span class="pl-ent">div</span>&gt;
+      &lt;<span class="pl-ent">div</span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>modal-footer<span class="pl-pds">&quot;</span></span>&gt;
+         &lt;<span class="pl-ent">form</span> <span class="pl-e">method</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>post<span class="pl-pds">&quot;</span></span> <span class="pl-e">action</span>=<span class="pl-s"><span class="pl-pds">'</span>&lt;?= $this-&gt;url(<span class="pl-pds">'</span></span><span class="pl-e">user</span><span class="pl-s"><span class="pl-pds">'</span>, array(<span class="pl-pds">'</span></span><span class="pl-e">action</span><span class="pl-s"><span class="pl-pds">'</span>=&gt;<span class="pl-pds">'</span></span><span class="pl-e">delete</span><span class="pl-s"><span class="pl-pds">'</span>, <span class="pl-pds">'</span></span><span class="pl-e">id</span><span class="pl-s"><span class="pl-pds">'</span> =&gt; $user-&gt;getId()));?&gt;<span class="pl-pds">'</span></span>&gt;
+          &lt;<span class="pl-ent">input</span> <span class="pl-e">type</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>submit<span class="pl-pds">&quot;</span></span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>btn btn-default<span class="pl-pds">&quot;</span></span> <span class="pl-e">value</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>Delete<span class="pl-pds">&quot;</span></span>&gt;
+         &lt;/<span class="pl-ent">form</span>&gt;
+      &lt;/<span class="pl-ent">div</span>&gt;
+    &lt;/<span class="pl-ent">div</span>&gt;
+  &lt;/<span class="pl-ent">div</span>&gt;
+&lt;/<span class="pl-ent">div</span>&gt;</pre>
+</div> 
 <p>This covers basic CRUD actions using Doctrine 2 ORM in ZF2.</p> 
 <h2> <a id="user-content-association-mapping" class="anchor" href="#association-mapping" aria-hidden="true"><span class="octicon octicon-link"></span></a>Association Mapping</h2> 
 <p>This chapter explains mapping associations between objects.</p> 
@@ -1088,6 +1105,172 @@ class IndexController extends AbstractActionController
 <ul> 
  <li>You find other Association Mapping in <a href="http://doctrine-orm.readthedocs.org/projects/doctrine-orm/en/latest/reference/association-mapping.html">Doctrine</a> </li> 
 </ul> 
+<h1> <a id="user-content-improve-the-code" class="anchor" href="#improve-the-code" aria-hidden="true"><span class="octicon octicon-link"></span></a>Improve the code</h1> 
+<p>To improve the code we will use Service layer and we will use Doctrine Only in Service and either in Controller.</p> 
+<ul> 
+ <li>First step add the following code in Application/Service/UserService.php</li> 
+</ul> 
+<div class="highlight highlight-text-html-php">
+ <pre><span class="pl-pse">&lt;?php</span><span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-k">namespace</span> <span class="pl-en">Application\Service</span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Application\Entity\User</span>;</span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Application\Entity\Phonenumbers</span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-k">class</span> <span class="pl-en">UserService</span></span>
+<span class="pl-s1">{</span>
+<span class="pl-s1">    <span class="pl-k">protected</span> <span class="pl-smi">$em</span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-k">public</span> <span class="pl-k">function</span> <span class="pl-en">setEntityManager</span>(<span class="pl-smi">$em</span>) </span>
+<span class="pl-s1">    {</span>
+<span class="pl-s1">        <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">em</span> <span class="pl-k">=</span> <span class="pl-smi">$em</span>;</span>
+<span class="pl-s1">        <span class="pl-k">return</span> <span class="pl-smi">$this</span>;</span>
+<span class="pl-s1">    }</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-k">public</span> <span class="pl-k">function</span> <span class="pl-en">saveUser</span> (<span class="pl-smi">$request</span>, <span class="pl-smi">$id</span> <span class="pl-k">=</span> <span class="pl-c1">null</span>)</span>
+<span class="pl-s1">    {</span>
+<span class="pl-s1">        <span class="pl-smi">$user</span> <span class="pl-k">=</span> <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span>getUser(<span class="pl-smi">$id</span>);</span>
+<span class="pl-s1">        <span class="pl-smi">$user</span><span class="pl-k">-&gt;</span>getPhonenumbers()<span class="pl-k">-&gt;</span>clear();</span>
+<span class="pl-s1">        <span class="pl-smi">$phoneNumbersPost</span> <span class="pl-k">=</span> <span class="pl-smi">$request</span><span class="pl-k">-&gt;</span>getPost(<span class="pl-s"><span class="pl-pds">'</span>phoneNumber<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-smi">$contacts</span> <span class="pl-k">=</span>  <span class="pl-c1">array_map</span>(<span class="pl-k">function</span> (<span class="pl-smi">$phoneNum</span>) {</span>
+<span class="pl-s1">                <span class="pl-smi">$phoneNumber</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">Phonenumbers</span>();</span>
+<span class="pl-s1">                <span class="pl-smi">$phoneNumber</span><span class="pl-k">-&gt;</span>setNumber(<span class="pl-smi">$phoneNum</span>);</span>
+<span class="pl-s1">                <span class="pl-k">return</span> <span class="pl-smi">$phoneNumber</span>;</span>
+<span class="pl-s1">            }, </span>
+<span class="pl-s1">            <span class="pl-c1">array_filter</span>(<span class="pl-smi">$phoneNumbersPost</span>)</span>
+<span class="pl-s1">        );      </span>
+<span class="pl-s1">        <span class="pl-k">foreach</span> (<span class="pl-smi">$contacts</span> <span class="pl-k">as</span> <span class="pl-smi">$contact</span>) {</span>
+<span class="pl-s1">            <span class="pl-smi">$user</span><span class="pl-k">-&gt;</span>setPhonenumbers(<span class="pl-smi">$contact</span>);</span>
+<span class="pl-s1">        } </span>
+<span class="pl-s1">        <span class="pl-smi">$user</span><span class="pl-k">-&gt;</span>setFullName(<span class="pl-smi">$request</span><span class="pl-k">-&gt;</span>getPost(<span class="pl-s"><span class="pl-pds">'</span>fullname<span class="pl-pds">'</span></span>));</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">em</span><span class="pl-k">-&gt;</span>persist(<span class="pl-smi">$user</span>);</span>
+<span class="pl-s1">        <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">em</span><span class="pl-k">-&gt;</span>flush();</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-k">return</span> <span class="pl-smi">$user</span><span class="pl-k">-&gt;</span>getId();</span>
+<span class="pl-s1">    }</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-k">public</span> <span class="pl-k">function</span> <span class="pl-en">getUser</span> (<span class="pl-smi">$id</span> <span class="pl-k">=</span> <span class="pl-c1">null</span>)</span>
+<span class="pl-s1">    {</span>
+<span class="pl-s1">        <span class="pl-k">if</span> (<span class="pl-smi">$id</span>) {</span>
+<span class="pl-s1">             <span class="pl-k">return</span>  <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">em</span><span class="pl-k">-&gt;</span>find(<span class="pl-c1">User</span><span class="pl-k">::</span><span class="pl-c1">class</span>, <span class="pl-smi">$id</span>);</span>
+<span class="pl-s1">         } <span class="pl-k">else</span> {</span>
+<span class="pl-s1">             <span class="pl-k">return</span> <span class="pl-k">new</span> <span class="pl-c1">User</span>();</span>
+<span class="pl-s1">         }</span>
+<span class="pl-s1">    }</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-k">public</span> <span class="pl-k">function</span> <span class="pl-en">getAllUser</span> () </span>
+<span class="pl-s1">    {</span>
+<span class="pl-s1">       <span class="pl-k">return</span>  <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">em</span><span class="pl-k">-&gt;</span>getRepository(<span class="pl-c1">User</span><span class="pl-k">::</span><span class="pl-c1">class</span>)<span class="pl-k">-&gt;</span>findAll();</span>
+<span class="pl-s1">    }</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-k">public</span> <span class="pl-k">function</span> <span class="pl-en">deleteUser</span> (<span class="pl-smi">$user</span>) </span>
+<span class="pl-s1">    {</span>
+<span class="pl-s1">        <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">em</span><span class="pl-k">-&gt;</span>remove(<span class="pl-smi">$user</span>);</span>
+<span class="pl-s1">        <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">em</span><span class="pl-k">-&gt;</span>flush();</span>
+<span class="pl-s1">    }       </span>
+<span class="pl-s1">}</span></pre>
+</div> 
+<ul> 
+ <li>Second step add new factory Application/factory/UserServicefactory.php</li> 
+</ul> 
+<div class="highlight highlight-text-html-php">
+ <pre><span class="pl-pse">&lt;?php</span><span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-k">namespace</span> <span class="pl-en">Application\factory</span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Doctrine\ORM\EntityManager</span>;</span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Zend\ServiceManager\ServiceLocatorInterface</span>;</span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Zend\ServiceManager\FactoryInterface</span>;</span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Application\Service\UserService</span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c">/**</span></span>
+<span class="pl-s1"><span class="pl-c"> * Class UserServiceFactory</span></span>
+<span class="pl-s1"><span class="pl-c"> */</span></span>
+<span class="pl-s1"><span class="pl-k">class</span> <span class="pl-en">UserServiceFactory</span> <span class="pl-k">implements</span> <span class="pl-e">FactoryInterface</span></span>
+<span class="pl-s1">{</span>
+<span class="pl-s1">    <span class="pl-c">/**</span></span>
+<span class="pl-s1"><span class="pl-c"> * <span class="pl-k">@param</span> ServiceLocatorInterface $serviceLocator</span></span>
+<span class="pl-s1"><span class="pl-c"> * <span class="pl-k">@return</span> UserService</span></span>
+<span class="pl-s1"><span class="pl-c"> */</span></span>
+<span class="pl-s1">    <span class="pl-k">public</span> <span class="pl-k">function</span> <span class="pl-en">createService</span>(<span class="pl-c1">ServiceLocatorInterface</span> <span class="pl-smi">$serviceLocator</span>)</span>
+<span class="pl-s1">    {</span>
+<span class="pl-s1">        <span class="pl-smi">$service</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">UserService</span>();</span>
+<span class="pl-s1">        <span class="pl-c">/** @var EntityManager $em */</span></span>
+<span class="pl-s1">        <span class="pl-smi">$em</span> <span class="pl-k">=</span> <span class="pl-smi">$serviceLocator</span><span class="pl-k">-&gt;</span>get(<span class="pl-c1">EntityManager</span><span class="pl-k">::</span><span class="pl-c1">class</span>);</span>
+<span class="pl-s1">        <span class="pl-smi">$service</span><span class="pl-k">-&gt;</span>setEntityManager(<span class="pl-smi">$em</span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-k">return</span> <span class="pl-smi">$service</span>;</span>
+<span class="pl-s1">    }</span>
+<span class="pl-s1">}</span></pre>
+</div> 
+<ul> 
+ <li>Third step add new factory to service Manager in config/module.config.php</li> 
+</ul> 
+<div class="highlight highlight-text-html-php">
+ <pre><span class="pl-s1"><span class="pl-k">&lt;</span>?<span class="pl-c1">php</span> </span>
+<span class="pl-s1"><span class="pl-k">return</span> <span class="pl-c1">array</span>(</span>
+<span class="pl-s1">    <span class="pl-k">...</span></span>
+<span class="pl-s1">    <span class="pl-s"><span class="pl-pds">'</span>service_manager<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> <span class="pl-c1">array</span>(</span>
+<span class="pl-s1">        <span class="pl-s"><span class="pl-pds">'</span>factories<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> <span class="pl-c1">array</span>(</span>
+<span class="pl-s1">            <span class="pl-s"><span class="pl-pds">'</span>user-service<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> <span class="pl-s"><span class="pl-pds">'</span>Application\Factory\UserServiceFactory<span class="pl-pds">'</span></span>,</span>
+<span class="pl-s1">        ),</span>
+<span class="pl-s1">        <span class="pl-k">....</span></span>
+<span class="pl-s1">    ),</span>
+<span class="pl-s1">    <span class="pl-k">...</span></span>
+<span class="pl-s1">);</span></pre>
+</div> 
+<ul> 
+ <li>Finally we will use our Service in Controller,</li> 
+</ul> 
+<p>Update IndexConytroller.php with the following code:</p> 
+<div class="highlight highlight-text-html-php">
+ <pre><span class="pl-pse">&lt;?php</span><span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-k">namespace</span> <span class="pl-en">Application\Controller</span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Zend\Mvc\Controller\AbstractActionController</span>;</span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Zend\View\Model\ViewModel</span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-k">class</span> <span class="pl-en">IndexController</span> <span class="pl-k">extends</span> <span class="pl-e">AbstractActionController</span></span>
+<span class="pl-s1">{</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-k">public</span> <span class="pl-k">function</span> <span class="pl-en">indexAction</span>()</span>
+<span class="pl-s1">    {</span>
+<span class="pl-s1">        <span class="pl-smi">$userService</span> <span class="pl-k">=</span> <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span>getServiceLocator()<span class="pl-k">-&gt;</span>get(<span class="pl-s"><span class="pl-pds">'</span>user-service<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1">        <span class="pl-smi">$users</span> <span class="pl-k">=</span> <span class="pl-smi">$userService</span><span class="pl-k">-&gt;</span>getAllUser();</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-k">return</span> <span class="pl-k">new</span> <span class="pl-c1">ViewModel</span>(<span class="pl-c1">array</span>(<span class="pl-s"><span class="pl-pds">'</span>users<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> <span class="pl-smi">$users</span>));</span>
+<span class="pl-s1">    }</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-k">public</span> <span class="pl-k">function</span> <span class="pl-en">saveAction</span>()</span>
+<span class="pl-s1">    {        </span>
+<span class="pl-s1">        <span class="pl-smi">$userService</span> <span class="pl-k">=</span> <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span>getServiceLocator()<span class="pl-k">-&gt;</span>get(<span class="pl-s"><span class="pl-pds">'</span>user-service<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1">        <span class="pl-smi">$id</span> <span class="pl-k">=</span> (<span class="pl-k">int</span>) <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span>params()<span class="pl-k">-&gt;</span>fromRoute(<span class="pl-s"><span class="pl-pds">'</span>id<span class="pl-pds">'</span></span>, <span class="pl-c1">null</span>);</span>
+<span class="pl-s1">        <span class="pl-k">if</span> (<span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">request</span><span class="pl-k">-&gt;</span>isPost()) {</span>
+<span class="pl-s1">            <span class="pl-smi">$userService</span><span class="pl-k">-&gt;</span>saveUser(<span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">request</span>, <span class="pl-smi">$id</span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">            <span class="pl-k">return</span> <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span>redirect()<span class="pl-k">-&gt;</span>toRoute(<span class="pl-s"><span class="pl-pds">'</span>home<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1">        }</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-k">return</span> <span class="pl-k">new</span> <span class="pl-c1">ViewModel</span>([<span class="pl-s"><span class="pl-pds">'</span>user<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> <span class="pl-smi">$userService</span><span class="pl-k">-&gt;</span>getUser(<span class="pl-smi">$id</span>)]);</span>
+<span class="pl-s1">    }</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-k">public</span> <span class="pl-k">function</span> <span class="pl-en">deleteAction</span>()</span>
+<span class="pl-s1">    {</span>
+<span class="pl-s1">        <span class="pl-smi">$id</span> <span class="pl-k">=</span> (<span class="pl-k">int</span>) <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span>params()<span class="pl-k">-&gt;</span>fromRoute(<span class="pl-s"><span class="pl-pds">'</span>id<span class="pl-pds">'</span></span>, <span class="pl-c1">null</span>);</span>
+<span class="pl-s1">        <span class="pl-smi">$userService</span> <span class="pl-k">=</span> <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span>getServiceLocator()<span class="pl-k">-&gt;</span>get(<span class="pl-s"><span class="pl-pds">'</span>user-service<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1">        <span class="pl-smi">$user</span> <span class="pl-k">=</span> <span class="pl-smi">$userService</span><span class="pl-k">-&gt;</span>getUser(<span class="pl-smi">$id</span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-k">if</span> (<span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">request</span><span class="pl-k">-&gt;</span>isPost()) {</span>
+<span class="pl-s1">            <span class="pl-smi">$userService</span><span class="pl-k">-&gt;</span>deleteUser(<span class="pl-smi">$user</span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">            <span class="pl-k">return</span> <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span>redirect()<span class="pl-k">-&gt;</span>toRoute(<span class="pl-s"><span class="pl-pds">'</span>home<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1">        }</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-k">return</span> <span class="pl-k">new</span> <span class="pl-c1">ViewModel</span>(<span class="pl-c1">array</span>(<span class="pl-s"><span class="pl-pds">'</span>user<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> <span class="pl-smi">$user</span>));</span>
+<span class="pl-s1">    }</span>
+<span class="pl-s1">}</span></pre>
+</div> 
 <h2> <a id="user-content-links" class="anchor" href="#links" aria-hidden="true"><span class="octicon octicon-link"></span></a>Links</h2> 
 <ul> 
  <li><a href="http://framework.zend.com/">ZF2</a></li> 

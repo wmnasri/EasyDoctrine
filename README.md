@@ -6,14 +6,14 @@ Creation Steps
 
 1.Create ZF2 project from skeleton using composer
 
-```
+```shell
 curl -s https://getcomposer.org/installer | php --
 php composer.phar create-project -sdev --repository-url="http://packages.zendframework.com" zendframework/skeleton-application zf2-example-doctrine2
 ```
 
 2.Update composer.json to require Doctrine 2
 
-```
+```shell
 php composer.phar self-update
 php composer.phar require doctrine/doctrine-module:dev-master
 php composer.phar require doctrine/doctrine-orm-module:dev-master
@@ -21,19 +21,19 @@ php composer.phar require doctrine/doctrine-orm-module:dev-master
 
 3.Install ZF Dev tools
 
-```
+```shell
 php composer.phar require zendframework/zend-developer-tools:dev-master
 ```
 
 4.Copy ZF Dev tools autoload config to application config and add modules
 
-```
+```shell
 cp vendor/zendframework/zend-developer-tools/config/zenddevelopertools.local.php.dist config/autoload/zdt.local.php
 ```
 
 Edit config/application.config.php:
 
-```
+```php
 ...
 'modules' => array(
     'ZendDeveloperTools',
@@ -48,7 +48,7 @@ Edit config/application.config.php:
 
 New file module/Application/src/Application/Entity/User.php:
 
-```
+```php
 <?php
 
 namespace Application\Entity;
@@ -86,7 +86,7 @@ class User {
 
 Edit config/module.config.php:
 
-```
+```php
 return array(
     'doctrine' => array(
         'driver' => array(
@@ -112,7 +112,7 @@ You should now see the new entity in the ZF2 Dev tool bar in the doctrine sectio
 
 New file local.php:
 
-```
+```php
 <?php
 
 return array(
@@ -121,7 +121,7 @@ return array(
 
 New file config/autoload/doctrine.local.php (for local MySql):
 
-```
+```php
 <?php
 
 return array(
@@ -140,7 +140,7 @@ return array(
 
 8.Validate the schema against the current DB (will fail since you haven't got any schema)
 
-```
+```shell
 ./vendor/bin/doctrine-module orm:validate-schema
 ```
 
@@ -148,7 +148,7 @@ return array(
 
 This will apply the ORM generated schema to the DB
 
-```
+```shell
 ./vendor/bin/doctrine-module orm:schema-tool:create
 ```
 
@@ -156,7 +156,7 @@ This will apply the ORM generated schema to the DB
 
 Edit module/Application/config/module.config.php:
 
-```
+```php
 ...
 'user' => array(
     'type'    => 'segment',
@@ -179,7 +179,7 @@ Edit module/Application/config/module.config.php:
 
 Edit module/Application/src/Application/Controller/IndexController.php:
 
-```
+```php
 <?php
 
 namespace Application\Controller;
@@ -249,7 +249,7 @@ class IndexController extends AbstractActionController
 
 Edit module/Application/view/application/index/index.phtml:
 
-```
+```html
 <div class="row">
     <div class="col-md-12">
         <div class="panel panel-default">
@@ -294,7 +294,7 @@ Edit module/Application/view/application/index/index.phtml:
 
 Add partial view  module/Application/view/application/index/add.phtml:
 
-```
+```html
 <div id ='Modal-add' class="modal fade" tabindex="-1" role="dialog">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -316,7 +316,7 @@ Add partial view  module/Application/view/application/index/add.phtml:
 ```
 Add partial view module/Application/view/application/index/edit.phtml:
 
-```
+```html
 <div id ='Modal-edit' class="modal fade" tabindex="-1" role="dialog">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -338,7 +338,7 @@ Add partial view module/Application/view/application/index/edit.phtml:
 ```
 Add partial view module/Application/view/application/index/delete.phtml:
 
-```
+```html
 <div id ='myModal' class="modal fade" tabindex="-1" role="dialog">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -517,6 +517,176 @@ Now edit saveAction function in IndexConytroller with the following code :
 ```
 
 - You find other Association Mapping in [Doctrine] (http://doctrine-orm.readthedocs.org/projects/doctrine-orm/en/latest/reference/association-mapping.html)
+
+# Improve the code 
+
+To improve the code we will use Service layer and we will use Doctrine Only in Service and either in Controller.
+
+- First step add the following code in Application/Service/UserService.php
+
+```php
+<?php
+namespace Application\Service;
+
+use Application\Entity\User;
+use Application\Entity\Phonenumbers;
+
+class UserService
+{
+    protected $em;
+    
+    public function setEntityManager($em) 
+    {
+        $this->em = $em;
+        return $this;
+    }
+    
+    public function saveUser ($request, $id = null)
+    {
+        $user = $this->getUser($id);
+        $user->getPhonenumbers()->clear();
+        $phoneNumbersPost = $request->getPost('phoneNumber');
+        
+        $contacts =  array_map(function ($phoneNum) {
+                $phoneNumber = new Phonenumbers();
+                $phoneNumber->setNumber($phoneNum);
+                return $phoneNumber;
+            }, 
+            array_filter($phoneNumbersPost)
+        );      
+        foreach ($contacts as $contact) {
+            $user->setPhonenumbers($contact);
+        } 
+        $user->setFullName($request->getPost('fullname'));
+    
+        $this->em->persist($user);
+        $this->em->flush();
+        
+        return $user->getId();
+    }
+    
+    public function getUser ($id = null)
+    {
+        if ($id) {
+             return  $this->em->find(User::class, $id);
+         } else {
+             return new User();
+         }
+    }
+    
+    public function getAllUser () 
+    {
+       return  $this->em->getRepository(User::class)->findAll();
+    }
+    
+    public function deleteUser ($user) 
+    {
+        $this->em->remove($user);
+        $this->em->flush();
+    }       
+}
+```
+
+- Second step add new factory Application/factory/UserServicefactory.php
+
+```php
+<?php
+namespace Application\factory;
+
+use Doctrine\ORM\EntityManager;
+use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\ServiceManager\FactoryInterface;
+use Application\Service\UserService;
+
+/**
+ * Class UserServiceFactory
+ */
+class UserServiceFactory implements FactoryInterface
+{
+    /**
+     * @param ServiceLocatorInterface $serviceLocator
+     * @return UserService
+     */
+    public function createService(ServiceLocatorInterface $serviceLocator)
+    {
+        $service = new UserService();
+        /** @var EntityManager $em */
+        $em = $serviceLocator->get(EntityManager::class);
+        $service->setEntityManager($em);
+
+        return $service;
+    }
+}
+```
+
+- Third step add new factory to service Manager in config/module.config.php
+
+```php
+<?php 
+return array(
+	...
+	'service_manager' => array(
+        'factories' => array(
+            'user-service' => 'Application\Factory\UserServiceFactory',
+        ),
+        ....
+    ),
+	...
+);
+```
+
+- Finally we will use our Service in Controller,
+
+Update IndexConytroller.php with the following code:
+
+```php
+<?php
+namespace Application\Controller;
+
+use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\ViewModel;
+
+class IndexController extends AbstractActionController
+{
+
+    public function indexAction()
+    {
+        $userService = $this->getServiceLocator()->get('user-service');
+        $users = $userService->getAllUser();
+
+        return new ViewModel(array('users' => $users));
+    }
+
+    public function saveAction()
+    {        
+        $userService = $this->getServiceLocator()->get('user-service');
+        $id = (int) $this->params()->fromRoute('id', null);
+        if ($this->request->isPost()) {
+            $userService->saveUser($this->request, $id);
+
+            return $this->redirect()->toRoute('home');
+        }
+        
+        return new ViewModel(['user' => $userService->getUser($id)]);
+    }
+
+    public function deleteAction()
+    {
+        $id = (int) $this->params()->fromRoute('id', null);
+        $userService = $this->getServiceLocator()->get('user-service');
+        $user = $userService->getUser($id);
+
+        if ($this->request->isPost()) {
+            $userService->deleteUser($user);
+            
+            return $this->redirect()->toRoute('home');
+        }
+
+        return new ViewModel(array('user' => $user));
+    }
+}
+```
+
 
 Links
 -----
