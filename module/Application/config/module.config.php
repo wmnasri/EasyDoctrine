@@ -81,6 +81,9 @@ return array(
         ),
     ),
     'service_manager' => array(
+        'factories' => [
+            'user-service' => 'Application\Factory\UserServiceFactory'
+        ],
         'abstract_factories' => array(
             'Zend\Cache\Service\StorageCacheAbstractServiceFactory',
             'Zend\Log\LoggerAbstractServiceFactory',
