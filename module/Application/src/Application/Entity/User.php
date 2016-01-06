@@ -54,7 +54,6 @@ class User
     }
     
     /**
-     * 
      * @return ArrayCollection
      */
     public function getPhonenumbers()
@@ -63,13 +62,11 @@ class User
     }
     
     /**
-     * 
-     * @param Phonenumbers $value
+     * @param ArrayCollection $value
      */
-    public function setPhonenumbers(Phonenumbers $value) 
+    public function setPhonenumbers(ArrayCollection $value) 
     {
-        if (!$this->phonenumbers->contains($value)) {
-            $this->phonenumbers->add($value);
-        }
+        $this->phonenumbers = $value;
+        return $this;
     }
 }
