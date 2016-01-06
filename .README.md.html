@@ -1111,14 +1111,19 @@ php composer.phar require doctrine/doctrine-orm-module:dev-master</pre>
  <li>First step add the following code in Application/Service/UserService.php</li> 
 </ul> 
 <div class="highlight highlight-text-html-php">
- <pre><span class="pl-pse">&lt;?php</span><span class="pl-s1"></span>
+ <pre><span class="pl-s1"></span>
 <span class="pl-s1"><span class="pl-k">namespace</span> <span class="pl-en">Application\Service</span>;</span>
 <span class="pl-s1"></span>
 <span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Application\Entity\User</span>;</span>
 <span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Application\Entity\Phonenumbers</span>;</span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Doctrine\ORM\EntityManager</span>;</span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Doctrine\Common\Collections\ArrayCollection</span>;</span>
 <span class="pl-s1"></span>
 <span class="pl-s1"><span class="pl-k">class</span> <span class="pl-en">UserService</span></span>
 <span class="pl-s1">{</span>
+<span class="pl-s1">    <span class="pl-c">/**</span></span>
+<span class="pl-s1"><span class="pl-c"> * <span class="pl-k">@var</span> EntityManager</span></span>
+<span class="pl-s1"><span class="pl-c"> */</span></span>
 <span class="pl-s1">    <span class="pl-k">protected</span> <span class="pl-smi">$em</span>;</span>
 <span class="pl-s1"></span>
 <span class="pl-s1">    <span class="pl-k">public</span> <span class="pl-k">function</span> <span class="pl-en">setEntityManager</span>(<span class="pl-smi">$em</span>) </span>
@@ -1130,19 +1135,24 @@ php composer.phar require doctrine/doctrine-orm-module:dev-master</pre>
 <span class="pl-s1">    <span class="pl-k">public</span> <span class="pl-k">function</span> <span class="pl-en">saveUser</span> (<span class="pl-smi">$request</span>, <span class="pl-smi">$id</span> <span class="pl-k">=</span> <span class="pl-c1">null</span>)</span>
 <span class="pl-s1">    {</span>
 <span class="pl-s1">        <span class="pl-smi">$user</span> <span class="pl-k">=</span> <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span>getUser(<span class="pl-smi">$id</span>);</span>
-<span class="pl-s1">        <span class="pl-smi">$user</span><span class="pl-k">-&gt;</span>getPhonenumbers()<span class="pl-k">-&gt;</span>clear();</span>
+<span class="pl-s1">        <span class="pl-smi">$arrayCollection</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">ArrayCollection</span>();</span>
 <span class="pl-s1">        <span class="pl-smi">$phoneNumbersPost</span> <span class="pl-k">=</span> <span class="pl-smi">$request</span><span class="pl-k">-&gt;</span>getPost(<span class="pl-s"><span class="pl-pds">'</span>phoneNumber<span class="pl-pds">'</span></span>);</span>
 <span class="pl-s1"></span>
-<span class="pl-s1">        <span class="pl-smi">$contacts</span> <span class="pl-k">=</span>  <span class="pl-c1">array_map</span>(<span class="pl-k">function</span> (<span class="pl-smi">$phoneNum</span>) {</span>
-<span class="pl-s1">                <span class="pl-smi">$phoneNumber</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">Phonenumbers</span>();</span>
-<span class="pl-s1">                <span class="pl-smi">$phoneNumber</span><span class="pl-k">-&gt;</span>setNumber(<span class="pl-smi">$phoneNum</span>);</span>
-<span class="pl-s1">                <span class="pl-k">return</span> <span class="pl-smi">$phoneNumber</span>;</span>
-<span class="pl-s1">            }, </span>
-<span class="pl-s1">            <span class="pl-c1">array_filter</span>(<span class="pl-smi">$phoneNumbersPost</span>)</span>
-<span class="pl-s1">        );      </span>
-<span class="pl-s1">        <span class="pl-k">foreach</span> (<span class="pl-smi">$contacts</span> <span class="pl-k">as</span> <span class="pl-smi">$contact</span>) {</span>
-<span class="pl-s1">            <span class="pl-smi">$user</span><span class="pl-k">-&gt;</span>setPhonenumbers(<span class="pl-smi">$contact</span>);</span>
-<span class="pl-s1">        } </span>
+<span class="pl-s1">        <span class="pl-smi">$phoneNumbersIds</span> <span class="pl-k">=</span> <span class="pl-c1">array_map</span>( <span class="pl-k">function</span> (<span class="pl-smi">$val</span>) {</span>
+<span class="pl-s1">               <span class="pl-k">return</span> (<span class="pl-smi">$val</span>) ? <span class="pl-smi">$val</span> : <span class="pl-c1">rand</span>(<span class="pl-k">-</span><span class="pl-c1">100</span>, <span class="pl-k">-</span><span class="pl-c1">1</span>);</span>
+<span class="pl-s1">            },</span>
+<span class="pl-s1">           <span class="pl-smi">$request</span><span class="pl-k">-&gt;</span>getPost(<span class="pl-s"><span class="pl-pds">'</span>ids<span class="pl-pds">'</span></span>)</span>
+<span class="pl-s1">        );</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-smi">$phoneArray</span> <span class="pl-k">=</span> <span class="pl-c1">array_combine</span>(<span class="pl-smi">$phoneNumbersIds</span>, <span class="pl-smi">$phoneNumbersPost</span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-k">foreach</span> (<span class="pl-c1">array_filter</span>(<span class="pl-smi">$phoneArray</span>) <span class="pl-k">as</span> <span class="pl-smi">$key</span> <span class="pl-k">=&gt;</span> <span class="pl-smi">$val</span>) {</span>
+<span class="pl-s1">            <span class="pl-smi">$phoneNumber</span> <span class="pl-k">=</span> <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span>getPhoneNumber (<span class="pl-smi">$user</span>, <span class="pl-smi">$key</span>);</span>
+<span class="pl-s1">            <span class="pl-smi">$phoneNumber</span><span class="pl-k">-&gt;</span>setNumber(<span class="pl-smi">$val</span>);</span>
+<span class="pl-s1">            <span class="pl-smi">$arrayCollection</span><span class="pl-k">-&gt;</span>add(<span class="pl-smi">$phoneNumber</span>); </span>
+<span class="pl-s1">        }</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-smi">$user</span><span class="pl-k">-&gt;</span>setPhonenumbers(<span class="pl-smi">$arrayCollection</span>);</span>
 <span class="pl-s1">        <span class="pl-smi">$user</span><span class="pl-k">-&gt;</span>setFullName(<span class="pl-smi">$request</span><span class="pl-k">-&gt;</span>getPost(<span class="pl-s"><span class="pl-pds">'</span>fullname<span class="pl-pds">'</span></span>));</span>
 <span class="pl-s1"></span>
 <span class="pl-s1">        <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">em</span><span class="pl-k">-&gt;</span>persist(<span class="pl-smi">$user</span>);</span>
@@ -1160,6 +1170,16 @@ php composer.phar require doctrine/doctrine-orm-module:dev-master</pre>
 <span class="pl-s1">         }</span>
 <span class="pl-s1">    }</span>
 <span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-k">public</span> <span class="pl-k">function</span> <span class="pl-en">getPhoneNumber</span> (<span class="pl-smi">$user</span>, <span class="pl-smi">$id</span>)</span>
+<span class="pl-s1">    {</span>
+<span class="pl-s1">        <span class="pl-k">foreach</span> (<span class="pl-smi">$user</span><span class="pl-k">-&gt;</span>getPhonenumbers() <span class="pl-k">as</span> <span class="pl-smi">$element</span>) {</span>
+<span class="pl-s1">            <span class="pl-k">if</span> (<span class="pl-smi">$element</span><span class="pl-k">-&gt;</span>getId() <span class="pl-k">==</span> <span class="pl-smi">$id</span>) {</span>
+<span class="pl-s1">                <span class="pl-k">return</span> <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">em</span><span class="pl-k">-&gt;</span>find(<span class="pl-c1">Phonenumbers</span><span class="pl-k">::</span><span class="pl-c1">class</span>, <span class="pl-smi">$id</span>);</span>
+<span class="pl-s1">            }</span>
+<span class="pl-s1">        }</span>
+<span class="pl-s1">        <span class="pl-k">return</span> <span class="pl-k">new</span> <span class="pl-c1">Phonenumbers</span>();</span>
+<span class="pl-s1">    }</span>
+<span class="pl-s1"></span>
 <span class="pl-s1">    <span class="pl-k">public</span> <span class="pl-k">function</span> <span class="pl-en">getAllUser</span> () </span>
 <span class="pl-s1">    {</span>
 <span class="pl-s1">       <span class="pl-k">return</span>  <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">em</span><span class="pl-k">-&gt;</span>getRepository(<span class="pl-c1">User</span><span class="pl-k">::</span><span class="pl-c1">class</span>)<span class="pl-k">-&gt;</span>findAll();</span>
@@ -1169,8 +1189,9 @@ php composer.phar require doctrine/doctrine-orm-module:dev-master</pre>
 <span class="pl-s1">    {</span>
 <span class="pl-s1">        <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">em</span><span class="pl-k">-&gt;</span>remove(<span class="pl-smi">$user</span>);</span>
 <span class="pl-s1">        <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">em</span><span class="pl-k">-&gt;</span>flush();</span>
-<span class="pl-s1">    }       </span>
-<span class="pl-s1">}</span></pre>
+<span class="pl-s1">    }</span>
+<span class="pl-s1">}</span>
+<span class="pl-s1"></span></pre>
 </div> 
 <ul> 
  <li>Second step add new factory Application/factory/UserServicefactory.php</li> 
